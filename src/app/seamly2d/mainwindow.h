@@ -395,6 +395,9 @@ private:
     void               SaveCurrentScene();
     void               RestoreCurrentScene();
 
+    void               paintObject(quint32 id, SceneObject type);
+
+
     void               MinimumScrollBar();
 
     template <typename Dialog, typename Func>
