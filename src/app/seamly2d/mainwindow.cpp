@@ -2717,6 +2717,8 @@ void MainWindow::handlePaintTool(bool checked, Pen pen)
 
     if (checked)
     {
+        selectPaintTool();
+
         CancelTool();
         emit EnableItemMove(false);
         currentTool = lastUsedTool = Tool::Paint;
@@ -8006,6 +8008,34 @@ void MainWindow::selectAllDraftObjectsTool() const
     emit EnableLabelHover(true);
     emit EnablePointHover(true);
     emit EnableLineHover(false);
+    emit EnableArcHover(true);
+    emit EnableElArcHover(true);
+    emit EnableSplineHover(true);
+    emit EnableSplinePathHover(true);
+    emit EnableImageHover(false);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->allowRubberBand(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::selectPaintTool() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(false);
+    emit EnablePointSelection(true);
+    emit EnableLineSelection(true);
+    emit EnableArcSelection(true);
+    emit EnableElArcSelection(true);
+    emit EnableSplineSelection(true);
+    emit EnableSplinePathSelection(true);
+    emit EnableImageSelection(false);
+
+    // Hovering
+    emit EnableLabelHover(false);
+    emit EnablePointHover(true);
+    emit EnableLineHover(true);
     emit EnableArcHover(true);
     emit EnableElArcHover(true);
     emit EnableSplineHover(true);
