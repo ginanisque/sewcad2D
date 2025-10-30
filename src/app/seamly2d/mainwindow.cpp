@@ -2711,9 +2711,12 @@ void MainWindow::penChanged(Pen pen)
     doc->setDefaultPen(pen);
 }
 
-void MainWindow::handlePaintTool(bool checked, Pen pen)
+void MainWindow::handlePaintTool(bool checked, Pen pen = Pen())
 {
     qDebug("MainWindow::handlePaintTool has been called");
+
+    VMainGraphicsScene *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
+    SCASSERT(scene != nullptr)
 
     if (checked)
     {
@@ -2740,19 +2743,13 @@ void MainWindow::handlePaintTool(bool checked, Pen pen)
         setStatusMessage(tr("Paint tool : click on objects to paint them according to the color selected in the pen toolbar"));
         ui->view->setShowToolOptions(false);
 
-
-        VMainGraphicsScene *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
-        SCASSERT(scene != nullptr)
-
         connect(scene, &VMainGraphicsScene::ChosenObject, this, &MainWindow::paintObject);
         emit ui->view->itemClicked(nullptr);  // Clear Property Editor with non valid tool selection
     }
     else
     {
-        // if (QToolButton *tButton = qobject_cast< QToolButton * >(this->sender()))
-        // {
-        //     tButton->setChecked(true);
-        // }
+        QObject::disconnect(scene, &VMainGraphicsScene::ChosenObject, this, &MainWindow::paintObject);
+        handleArrowTool(true);
     }
 }
 
@@ -3753,6 +3750,17 @@ void MainWindow::CancelTool()
         case Tool::InsertNodes:
             ui->insertNodes_ToolButton->setChecked(false);
             break;
+        case Tool::Paint:
+        {
+            if (m_penToolBar->paintToolButton != nullptr)
+            {
+                m_penToolBar->paintToolButton->setChecked(false);
+            }
+            VMainGraphicsScene *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
+            SCASSERT(scene != nullptr)
+            QObject::disconnect(scene, &VMainGraphicsScene::ChosenObject, this, &MainWindow::paintObject);
+            break;
+        }
     }
 
     // Crash: using CRTL+Z while using line tool.
