@@ -5185,6 +5185,12 @@ void MainWindow::setToolsEnabled(bool enable)
     ui->layout_Action->setEnabled(layoutTools);
     ui->images_Action->setEnabled(layoutTools);
 
+    //Pen toolbar
+    if (m_penToolBar->paintToolButton != nullptr)
+    {
+        m_penToolBar->paintToolButton->setEnabled(draftTools);
+    }
+
     //Menu Actions
     //Points
     ui->midpoint_Action->setEnabled(draftTools);
