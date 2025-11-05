@@ -57,10 +57,18 @@
 #include <QPainterPath>
 #include <QPoint>
 #include <QtDebug>
+#include <utility>
 
 #include "vabstractcurve_p.h"
 
 const qreal VAbstractCurve::lengthCurveDirectionArrow = 14;
+
+#ifdef Q_COMPILER_RVALUE_REFS
+VAbstractCurve::VAbstractCurve(VAbstractCurve &&curve) noexcept
+    : VGObject(curve),
+      d(std::move(curve.d))
+{}
+#endif
 
 #ifdef Q_COMPILER_RVALUE_REFS
 VAbstractCurve &VAbstractCurve::operator=(VAbstractCurve &&curve) noexcept

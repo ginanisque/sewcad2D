@@ -6,6 +6,7 @@ HEADERS += \
     $$PWD/drawTools/operation/mirror/vtoolmirrorbyaxis.h \
     $$PWD/drawTools/operation/mirror/vtoolmirrorbyline.h \
     $$PWD/drawTools/toolpoint/toolsinglepoint/point_intersectxy_tool.h \
+    $$PWD/drawTools/toolpoint/toolsinglepoint/vtoolrectangle.h \
     $$PWD/drawTools/toolpoint/toolsinglepoint/toollinepoint/doubleline_point_tool.h \
     $$PWD/drawTools/toolpoint/toolsinglepoint/intersect_circles_tool.h \
     $$PWD/drawTools/toolpoint/toolsinglepoint/intersect_circletangent_tool.h \
@@ -68,6 +69,7 @@ SOURCES += \
     $$PWD/drawTools/operation/mirror/vtoolmirrorbyaxis.cpp \
     $$PWD/drawTools/operation/mirror/vtoolmirrorbyline.cpp \
     $$PWD/drawTools/toolpoint/toolsinglepoint/point_intersectxy_tool.cpp \
+    $$PWD/drawTools/toolpoint/toolsinglepoint/vtoolrectangle.cpp \
     $$PWD/drawTools/toolpoint/toolsinglepoint/toollinepoint/doubleline_point_tool.cpp \
     $$PWD/drawTools/toolpoint/toolsinglepoint/intersect_circles_tool.cpp \
     $$PWD/drawTools/toolpoint/toolsinglepoint/intersect_circletangent_tool.cpp \

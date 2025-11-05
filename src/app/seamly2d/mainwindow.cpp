@@ -82,6 +82,7 @@
 #include "../vpropertyexplorer/checkablemessagebox.h"
 #include "../qmuparser/qmuparsererror.h"
 #include "../vtools/dialogs/tooldialogs.h"
+#include "../vtools/dialogs/tools/dialogrectangle.h"
 #include "../vtools/dialogs/support/editlabeltemplate_dialog.h"
 #include "../vtools/tools/pattern_piece_tool.h"
 #include "../vtools/tools/union_tool.h"
@@ -970,6 +971,66 @@ void MainWindow::applyPiecesDialog()
     ApplyDialog<DrawTool>(pieceScene);
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ApplyRectangleDialog()
+{
+    if (dialogTool.isNull())
+    {
+        return;
+    }
+
+    const auto rectangleDialog = dialogTool.objectCast<DialogRectangle>();
+    if (rectangleDialog.isNull())
+    {
+        return;
+    }
+
+    VToolRectangle *cornerTool = createRectangle(rectangleDialog);
+    rectangleDialog->SetAssociatedTool(cornerTool);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ClosedRectangleDialog(int result)
+{
+    SCASSERT(!dialogTool.isNull())
+    if (result == QDialog::Accepted)
+    {
+        ApplyRectangleDialog();
+    }
+
+    auto rectangleDialog = dialogTool.objectCast<DialogRectangle>();
+    VToolRectangle *cornerTool = nullptr;
+    if (!rectangleDialog.isNull())
+    {
+        cornerTool = dynamic_cast<VToolRectangle *>(rectangleDialog->GetAssociatedTool());
+        if (cornerTool != nullptr)
+        {
+            cornerTool->DialogLinkDestroy();
+            connect(cornerTool, &PointIntersectXYTool::ToolTip, this, &MainWindow::setStatusMessage);
+        }
+    }
+
+    handleArrowTool(true);
+
+    if (cornerTool != nullptr)
+    {
+        ui->view->itemClicked(cornerTool);
+    }
+    else
+    {
+        ui->view->itemClicked(nullptr);
+    }
+
+    if (doc->getCursor() > 0)
+    {
+        doc->LiteParseTree(Document::LiteParse);
+        if (historyDialog)
+        {
+            historyDialog->updateHistory();
+        }
+    }
+}
+
 //Points
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::handleMidpointTool(bool checked)
@@ -1117,6 +1178,35 @@ void MainWindow::handleTriangleTool(bool checked)
         &MainWindow::ClosedDrawDialogWithApply<VToolTriangle>,
         &MainWindow::ApplyDrawDialog<VToolTriangle>
     );
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::handleRectangleTool(bool checked)
+{
+    ToolSelectPointByRelease();
+    if (checked)
+    {
+        SetToolButton<DialogRectangle>
+        (
+            checked,
+            Tool::Rectangle,
+            ":/cursor/rectangle_cursor.png",
+            tr("<b>Tool::Rectangle:</b> Select base point"),
+            &MainWindow::ClosedRectangleDialog
+        );
+
+        if (!dialogTool.isNull())
+        {
+            connect(dialogTool.data(), &DialogTool::DialogApplied, this, &MainWindow::ApplyRectangleDialog);
+        }
+    }
+    else
+    {
+        if (auto *tButton = qobject_cast<QToolButton *>(sender()))
+        {
+            tButton->setChecked(true);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2898,7 +2988,7 @@ void MainWindow::initializeToolButtons()
     connect(ui->arrowPointer_ToolButton, &QToolButton::clicked, this, &MainWindow::handleArrowTool);
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 54, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 55, "Check if all tools were connected.");
 
     connect(ui->pointAtDistanceAngle_ToolButton, &QToolButton::clicked,
             this, &MainWindow::handlePointAtDistanceAngleTool);
@@ -2918,6 +3008,7 @@ void MainWindow::initializeToolButtons()
     connect(ui->internalPath_ToolButton,   &QToolButton::clicked, this, &MainWindow::handleInternalPathTool);
     connect(ui->height_ToolButton,         &QToolButton::clicked, this, &MainWindow::handleHeightTool);
     connect(ui->triangle_ToolButton,       &QToolButton::clicked, this, &MainWindow::handleTriangleTool);
+    connect(ui->rectangle_ToolButton,      &QToolButton::clicked, this, &MainWindow::handleRectangleTool);
     connect(ui->pointIntersectXY_ToolButton,    &QToolButton::clicked, this, &MainWindow::handlePointIntersectXYTool);
     connect(ui->pointAlongCurve_ToolButton,     &QToolButton::clicked, this, &MainWindow::handlePointAlongCurveTool);
     connect(ui->pointAlongSpline_ToolButton,    &QToolButton::clicked, this, &MainWindow::handlePointAlongSplineTool);
@@ -3438,7 +3529,7 @@ QT_WARNING_DISABLE_GCC("-Wswitch-default")
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 54, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 55, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     dialogTool.clear();
@@ -3538,6 +3629,9 @@ void MainWindow::CancelTool()
             break;
         case Tool::Triangle:
             ui->triangle_ToolButton->setChecked(false);
+            break;
+        case Tool::Rectangle:
+            ui->rectangle_ToolButton->setChecked(false);
             break;
         case Tool::PointOfIntersection:
             ui->pointIntersectXY_ToolButton->setChecked(false);
@@ -4983,7 +5077,7 @@ void MainWindow::setToolsEnabled(bool enable)
     }
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 54, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 55, "Not all tools were handled.");
 
     //Toolbox Drafting Tools
     //Points
@@ -4994,6 +5088,7 @@ void MainWindow::setToolsEnabled(bool enable)
     ui->shoulderPoint_ToolButton->setEnabled(draftTools);
     ui->pointOfContact_ToolButton->setEnabled(draftTools);
     ui->triangle_ToolButton->setEnabled(draftTools);
+    ui->rectangle_ToolButton->setEnabled(draftTools);
     ui->pointIntersectXY_ToolButton->setEnabled(draftTools);
     ui->height_ToolButton->setEnabled(draftTools);
     ui->lineIntersectAxis_ToolButton->setEnabled(draftTools);
@@ -5071,6 +5166,7 @@ void MainWindow::setToolsEnabled(bool enable)
     ui->pointOnShoulder_Action->setEnabled(draftTools);
     ui->pointOfContact_Action->setEnabled(draftTools);
     ui->triangle_Action->setEnabled(draftTools);
+    ui->rectangle_Action->setEnabled(draftTools);
     ui->pointIntersectXY_Action->setEnabled(draftTools);
     ui->perpendicularPoint_Action->setEnabled(draftTools);
     ui->pointIntersectAxis_Action->setEnabled(draftTools);
@@ -5132,6 +5228,17 @@ void MainWindow::setToolsEnabled(bool enable)
     ui->arrowPointer_ToolButton->setEnabled(draftTools || pieceTools);
     ui->arrowPointer_ToolButton->setChecked(draftTools || pieceTools);
     ui->arrow_Action->setChecked(draftTools || pieceTools);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+VToolRectangle *MainWindow::createRectangle(const QSharedPointer<DialogRectangle> &dialog)
+{
+    if (dialog.isNull())
+    {
+        return nullptr;
+    }
+
+    return VToolRectangle::Create(dialog, draftScene, doc, pattern);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -5472,7 +5579,7 @@ QT_WARNING_DISABLE_GCC("-Wswitch-default")
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 54, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 55, "Not all tools were handled.");
 
     if (currentTool == lastUsedTool)
     {
@@ -5573,6 +5680,10 @@ void MainWindow::LastUsedTool()
         case Tool::Triangle:
             ui->triangle_ToolButton->setChecked(true);
             handleTriangleTool(true);
+            break;
+        case Tool::Rectangle:
+            ui->rectangle_ToolButton->setChecked(true);
+            handleRectangleTool(true);
             break;
         case Tool::PointOfIntersection:
             ui->pointIntersectXY_ToolButton->setChecked(true);
@@ -5966,6 +6077,12 @@ void MainWindow::createActions()
         ui->draft_ToolBox->setCurrentWidget(ui->points_Page);
         ui->triangle_ToolButton->setChecked(true);
         handleTriangleTool(true);
+    });
+    connect(ui->rectangle_Action, &QAction::triggered, this, [this]
+    {
+        ui->draft_ToolBox->setCurrentWidget(ui->points_Page);
+        ui->rectangle_ToolButton->setChecked(true);
+        handleRectangleTool(true);
     });
     connect(ui->pointIntersectXY_Action, &QAction::triggered, this, [this]
     {

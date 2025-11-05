@@ -136,7 +136,7 @@ VPieceNode::~VPieceNode()
 //---------------------------------------------------------------------------------------------------------------------
 QDataStream &operator<<(QDataStream &out, const VPieceNode &p)
 {
-    out << p.d;
+    out << *p.d;
     return out;
 }
 

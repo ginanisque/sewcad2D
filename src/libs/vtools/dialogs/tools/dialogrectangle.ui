@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogRectangle</class>
+ <widget class="QDialog" name="DialogRectangle">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>430</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Rectangle</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../../vmisc/share/resources/icon.qrc">
+    <normaloff>:/icon/64x64/icon64x64.png</normaloff>:/icon/64x64/icon64x64.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBoxSelection">
+     <property name="title">
+      <string>Selection</string>
+     </property>
+     <layout class="QFormLayout" name="formLayoutSelection">
+      <property name="labelAlignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelBasePoint">
+        <property name="text">
+         <string>Base point:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxBasePoint"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelWidthName">
+        <property name="text">
+         <string>Width point name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditWidthPoint"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelHeightName">
+        <property name="text">
+         <string>Length point name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEditHeightPoint"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelCornerName">
+        <property name="text">
+         <string>Corner point name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lineEditCornerPoint"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxGeometry">
+     <property name="title">
+      <string>Geometry</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayoutGeometry">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelWidth">
+        <property name="text">
+         <string>Width:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEditWidthFormula"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QToolButton" name="toolButtonFXWidth">
+        <property name="text">
+         <string>fx</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelLength">
+        <property name="text">
+         <string>Length:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditLengthFormula"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QToolButton" name="toolButtonFXLength">
+        <property name="text">
+         <string>fx</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelLineType">
+        <property name="text">
+         <string>Line type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="LineTypeComboBox" name="comboBoxLineType"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelLineWeight">
+        <property name="text">
+         <string>Line weight:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="LineWeightComboBox" name="comboBoxLineWeight"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelLineColor">
+        <property name="text">
+         <string>Line color:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="ColorComboBox" name="comboBoxLineColor"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+  </item>
+ </layout>
+</widget>
+ <customwidgets>
+  <customwidget>
+   <class>ColorComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">color_combobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LineTypeComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">linetype_combobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LineWeightComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">lineweight_combobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>DialogRectangle</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>393</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>DialogRectangle</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>393</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <resources>
+  <include location="../../../vmisc/share/resources/icon.qrc"/>
+ </resources>
+ <slots>
+  <slot>accept()</slot>
+  <slot>reject()</slot>
+ </slots>
+</ui>

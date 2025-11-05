@@ -70,11 +70,12 @@ class VAbstractCurve :public VGObject
 public:
     explicit VAbstractCurve(const GOType &type, const quint32 &idObject = NULL_ID,
                             const Draw &mode = Draw::Calculation);
-    explicit VAbstractCurve(const VAbstractCurve &curve);
+    VAbstractCurve(const VAbstractCurve &curve);
     virtual ~VAbstractCurve() override;
 
     VAbstractCurve &operator = (const VAbstractCurve &curve);
 #ifdef Q_COMPILER_RVALUE_REFS
+    VAbstractCurve(VAbstractCurve &&curve) noexcept;
 	VAbstractCurve &operator = (VAbstractCurve &&curve) noexcept;
 #endif
 
@@ -134,6 +135,8 @@ private:
     static QVector<QPointF>  ToEnd(const QVector<QPointF> &points, const QPointF &end, bool *ok = nullptr);
 };
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 Q_DECLARE_TYPEINFO(VAbstractCurve, Q_MOVABLE_TYPE);
+#endif
 
 #endif // VABSTRACTCURVE_H

@@ -295,6 +295,7 @@ enum class Tool : ToolVisHolderType
     NodeSplinePath,
     Height,
     Triangle,
+    Rectangle,
     LineIntersectAxis,
     PointOfIntersectionArcs,
     PointOfIntersectionCircles,

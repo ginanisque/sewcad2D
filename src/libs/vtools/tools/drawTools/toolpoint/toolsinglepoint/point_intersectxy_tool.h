@@ -83,7 +83,7 @@ protected:
     virtual void         ReadToolAttributes(const QDomElement &domElement) override;
     virtual void         SetVisualization() override;
 
-private:
+protected:
                          Q_DISABLE_COPY(PointIntersectXYTool)
                          PointIntersectXYTool(VAbstractPattern *doc, VContainer *data, const quint32 &id,
                                               const QString &lineType, const QString &lineWeight,

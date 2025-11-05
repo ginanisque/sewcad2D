@@ -24,6 +24,7 @@ HEADERS += \
     $$PWD/tools/dialogpointfromarcandtangent.h \
     $$PWD/tools/dialogpointofcontact.h \
     $$PWD/tools/dialogpointofintersectionarcs.h \
+    $$PWD/tools/dialogrectangle.h \
     $$PWD/tools/dialogshoulderpoint.h \
     $$PWD/tools/dialogsinglepoint.h \
     $$PWD/tools/dialogspline.h \
@@ -71,6 +72,7 @@ SOURCES += \
     $$PWD/tools/dialogpointfromarcandtangent.cpp \
     $$PWD/tools/dialogpointofcontact.cpp \
     $$PWD/tools/dialogpointofintersectionarcs.cpp \
+    $$PWD/tools/dialogrectangle.cpp \
     $$PWD/tools/dialogshoulderpoint.cpp \
     $$PWD/tools/dialogsinglepoint.cpp \
     $$PWD/tools/dialogspline.cpp \
@@ -118,6 +120,7 @@ FORMS += \
     $$PWD/tools/dialogpointfromarcandtangent.ui \
     $$PWD/tools/dialogpointofcontact.ui \
     $$PWD/tools/dialogpointofintersectionarcs.ui \
+    $$PWD/tools/dialogrectangle.ui \
     $$PWD/tools/dialogshoulderpoint.ui \
     $$PWD/tools/dialogsinglepoint.ui \
     $$PWD/tools/dialogspline.ui \

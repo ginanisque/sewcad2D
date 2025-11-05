@@ -1160,6 +1160,12 @@ void VPattern::ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElem
     Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
     Q_ASSERT_X(not type.isEmpty(), Q_FUNC_INFO, "type of point is empty");
 
+    if (type == VToolRectangle::ToolType)
+    {
+        parseRectangleTool(scene, domElement, parse);
+        return;
+    }
+
     QStringList points = QStringList() << VToolBasePoint::ToolType                  /*0*/
                                        << VToolEndLine::ToolType                    /*1*/
                                        << VToolAlongLine::ToolType                  /*2*/
@@ -1906,6 +1912,41 @@ void VPattern::parseIntersectXYTool(VMainGraphicsScene *scene, const QDomElement
     catch (const VExceptionBadId &error)
     {
         VExceptionObjectError excep(tr("Error creating or updating Intersect XY tool"), domElement);
+        excep.AddMoreInformation(error.ErrorMessage());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::parseRectangleTool(VMainGraphicsScene *scene, const QDomElement &domElement,
+                                  const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        quint32 id = 0;
+        QString name;
+        qreal mx = 0;
+        qreal my = 0;
+        QString lineType;
+        QString lineWeight;
+        QString lineColor;
+        bool showPointName = true;
+
+        PointsCommonAttributes(domElement, id, name, mx, my, showPointName, lineType, lineWeight, lineColor);
+
+        const quint32 basePointId   = GetParametrUInt(domElement, AttrBasePoint, NULL_ID_STR);
+        const quint32 firstPointId  = GetParametrUInt(domElement, AttrFirstPoint, NULL_ID_STR);
+        const quint32 secondPointId = GetParametrUInt(domElement, AttrSecondPoint, NULL_ID_STR);
+
+        VToolRectangle::Create(id, name, lineType, lineWeight, lineColor, basePointId, firstPointId, secondPointId,
+                               mx, my, showPointName, scene, this, data, parse, Source::FromFile);
+    }
+    catch (const VExceptionBadId &error)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating rectangle"), domElement);
         excep.AddMoreInformation(error.ErrorMessage());
         throw excep;
     }
@@ -4138,7 +4179,7 @@ QT_WARNING_DISABLE_GCC("-Wswitch-default")
 QRectF VPattern::ActiveDrawBoundingRect() const
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 54, "Not all tools were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 55, "Not all tools were used.");
 
     QRectF rect;
 
@@ -4165,6 +4206,7 @@ QRectF VPattern::ActiveDrawBoundingRect() const
                 case Tool::LineIntersect:
                 case Tool::PointOfContact:
                 case Tool::Triangle:
+                case Tool::Rectangle:
                 case Tool::PointOfIntersection:
                 case Tool::CutArc:
                 case Tool::CutSpline:

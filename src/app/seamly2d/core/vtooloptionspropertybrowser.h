@@ -208,6 +208,7 @@ private:
     void changeDataToolPointOfIntersectionArcs(VPE::VProperty *property);
     void changeDataToolPointOfIntersectionCircles(VPE::VProperty *property);
     void changeDataToolPointOfIntersectionCurves(VPE::VProperty *property);
+    void changeDataToolRectangle(VPE::VProperty *property);
     void changeDataToolPointFromCircleAndTangent(VPE::VProperty *property);
     void changeDataToolPointFromArcAndTangent(VPE::VProperty *property);
     void changeDataToolShoulderPoint(VPE::VProperty *property);
@@ -243,6 +244,7 @@ private:
     void showOptionsToolPointOfIntersectionArcs(QGraphicsItem *item);
     void showOptionsToolPointOfIntersectionCircles(QGraphicsItem *item);
     void showOptionsToolPointOfIntersectionCurves(QGraphicsItem *item);
+    void showOptionsToolRectangle(QGraphicsItem *item);
     void showOptionsToolPointFromCircleAndTangent(QGraphicsItem *item);
     void showOptionsToolPointFromArcAndTangent(QGraphicsItem *item);
     void showOptionsToolShoulderPoint(QGraphicsItem *item);
@@ -278,6 +280,7 @@ private:
     void updateOptionsToolPointOfIntersectionArcs();
     void updateOptionsToolPointOfIntersectionCircles();
     void updateOptionsToolPointOfIntersectionCurves();
+    void updateOptionsToolRectangle();
     void updateOptionsToolPointFromCircleAndTangent();
     void updateOptionsToolPointFromArcAndTangent();
     void updateOptionsToolShoulderPoint();

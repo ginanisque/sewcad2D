@@ -117,7 +117,7 @@ void VToolOptionsPropertyBrowser::clearPropertyBrowser()
 void VToolOptionsPropertyBrowser::showItemOptions(QGraphicsItem *item)
 {
     // This check helps to find missing tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 54, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 55, "Not all tools were used in switch.");
 
     switch (item->type())
     {
@@ -174,6 +174,9 @@ void VToolOptionsPropertyBrowser::showItemOptions(QGraphicsItem *item)
             break;
         case VToolPointOfIntersectionCurves::Type:
             showOptionsToolPointOfIntersectionCurves(item);
+            break;
+        case VToolRectangle::Type:
+            showOptionsToolRectangle(item);
             break;
         case VToolShoulderPoint::Type:
             showOptionsToolShoulderPoint(item);
@@ -244,7 +247,7 @@ void VToolOptionsPropertyBrowser::updateOptions()
     }
 
     // This check helps to find missing tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 54, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 55, "Not all tools were used in switch.");
 
     switch (currentItem->type())
     {
@@ -301,6 +304,9 @@ void VToolOptionsPropertyBrowser::updateOptions()
             break;
         case VToolPointOfIntersectionCurves::Type:
             updateOptionsToolPointOfIntersectionCurves();
+            break;
+        case VToolRectangle::Type:
+            updateOptionsToolRectangle();
             break;
         case VToolShoulderPoint::Type:
             updateOptionsToolShoulderPoint();
@@ -389,7 +395,7 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     }
 
     // This check helps to find missing tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 54, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 55, "Not all tools were used in switch.");
 
     switch (currentItem->type())
     {
@@ -446,6 +452,9 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
             break;
         case VToolPointOfIntersectionCurves::Type:
             changeDataToolPointOfIntersectionCurves(prop);
+            break;
+        case VToolRectangle::Type:
+            changeDataToolRectangle(prop);
             break;
         case VToolShoulderPoint::Type:
             changeDataToolShoulderPoint(prop);
@@ -1713,6 +1722,52 @@ void VToolOptionsPropertyBrowser::changeDataToolPointOfIntersection(VPE::VProper
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolOptionsPropertyBrowser::changeDataToolRectangle(VPE::VProperty *property)
+{
+    SCASSERT(property != nullptr)
+
+    QVariant value = property->data(VPE::VProperty::DPC_Data, Qt::DisplayRole);
+    const QString id = propertyToId[property];
+
+    VToolRectangle *tool = qgraphicsitem_cast<VToolRectangle *>(currentItem);
+    SCASSERT(tool != nullptr)
+
+    switch (propertiesList().indexOf(id))
+    {
+        case 0: // AttrName
+            setPointName<VToolRectangle>(value.toString());
+            break;
+        case 2: // AttrBasePoint
+            tool->setBasePointId(value.toInt());
+            break;
+        case 3: // AttrLineType
+            tool->setLineAttributes(value.toString(), tool->getLineColor(), tool->getLineWeight());
+            break;
+        case 26: // AttrLineColor
+            tool->setLineAttributes(tool->getLineType(), value.toString(), tool->getLineWeight());
+            break;
+        case 60: // AttrLineWeight
+            tool->setLineAttributes(tool->getLineType(), tool->getLineColor(), value.toString());
+            break;
+        case 63: // AttrRectWidth
+        {
+            VFormula formula = value.value<VFormula>();
+            tool->setWidthFormula(formula);
+            break;
+        }
+        case 64: // AttrRectHeight
+        {
+            VFormula formula = value.value<VFormula>();
+            tool->setHeightFormula(formula);
+            break;
+        }
+        default:
+            qWarning() << "Unknown property type. id = " << id;
+            break;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolOptionsPropertyBrowser::changeDataToolPointOfIntersectionArcs(VPE::VProperty *property)
 {
     SCASSERT(property != nullptr)
@@ -2716,6 +2771,39 @@ void VToolOptionsPropertyBrowser::showOptionsToolPointOfIntersection(QGraphicsIt
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolOptionsPropertyBrowser::showOptionsToolRectangle(QGraphicsItem *item)
+{
+    VToolRectangle *tool = qgraphicsitem_cast<VToolRectangle *>(item);
+    tool->ShowVisualization(true);
+    formView->setTitle(tr("Rectangle"));
+
+    addPropertyLabel(tr("Selection"), AttrName);
+    addPropertyObjectName(tool, tr("Corner name:"));
+    addObjectProperty(tool, tool->basePointName(), tr("Base point:"), AttrBasePoint, GOType::Point);
+
+    addPropertyLabel(tr("Geometry"), AttrName);
+
+    VFormula widthFormula;
+    if (VToolEndLine *width = tool->widthLineTool())
+    {
+        widthFormula = width->GetFormulaLength();
+    }
+    addPropertyFormula(tr("Width:"), widthFormula, AttrRectWidth);
+
+    VFormula heightFormula;
+    if (VToolEndLine *height = tool->heightLineTool())
+    {
+        heightFormula = height->GetFormulaLength();
+    }
+    addPropertyFormula(tr("Height:"), heightFormula, AttrRectHeight);
+
+    addPropertyLabel(tr("Attributes"), AttrName);
+    addPropertyLineColor(tool, tr("Color:"), AttrLineColor);
+    addPropertyLineType(tool, tr("Linetype:"));
+    addPropertyLineWeight(tool, tr("Lineweight:"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolOptionsPropertyBrowser::showOptionsToolPointOfIntersectionArcs(QGraphicsItem *item)
 {
     VToolPointOfIntersectionArcs *tool = qgraphicsitem_cast<VToolPointOfIntersectionArcs *>(item);
@@ -3603,6 +3691,49 @@ void VToolOptionsPropertyBrowser::updateOptionsToolPointOfIntersection()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolOptionsPropertyBrowser::updateOptionsToolRectangle()
+{
+    VToolRectangle *tool = qgraphicsitem_cast<VToolRectangle *>(currentItem);
+
+    idToProperty[AttrName]->setValue(tool->name());
+
+    {
+        const qint32 index = VPE::VObjectProperty::indexOfObject(getObjectList(tool, GOType::Point),
+                                                                               tool->basePointName());
+        idToProperty[AttrBasePoint]->setValue(index);
+    }
+
+    if (VToolEndLine *width = tool->widthLineTool())
+    {
+        QVariant valueWidth;
+        valueWidth.setValue(width->GetFormulaLength());
+        idToProperty[AttrRectWidth]->setValue(valueWidth);
+    }
+
+    if (VToolEndLine *height = tool->heightLineTool())
+    {
+        QVariant valueHeight;
+        valueHeight.setValue(height->GetFormulaLength());
+        idToProperty[AttrRectHeight]->setValue(valueHeight);
+    }
+
+    {
+        const qint32 index = VPE::VLineColorProperty::indexOfColor(VAbstractTool::ColorsList(), tool->getLineColor());
+        idToProperty[AttrLineColor]->setValue(index);
+    }
+
+    {
+        const qint32 index = VPE::LineTypeProperty::indexOfLineType(lineTypeList(), tool->getLineType());
+        idToProperty[AttrLineType]->setValue(index);
+    }
+
+    {
+        const qint32 index = VPE::LineWeightProperty::indexOfLineWeight(lineWeightList(), tool->getLineWeight());
+        idToProperty[AttrLineWeight]->setValue(index);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolOptionsPropertyBrowser::updateOptionsToolPointOfIntersectionArcs()
 {
     VToolPointOfIntersectionArcs *tool = qgraphicsitem_cast<VToolPointOfIntersectionArcs *>(currentItem);
@@ -4223,6 +4354,8 @@ QStringList VToolOptionsPropertyBrowser::propertiesList() const
                                             << AttrPenStyle                       /* 59 */
                                             << AttrLineWeight                     /* 60 */
                                             << AttrObjName                        /* 61 */
-                                            << AttrDirection;                     /* 62 */
+                                            << AttrDirection                     /* 62 */
+                                            << AttrRectWidth                     /* 63 */
+                                            << AttrRectHeight;                   /* 64 */
     return attr;
 }

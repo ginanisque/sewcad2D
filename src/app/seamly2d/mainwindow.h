@@ -75,6 +75,7 @@ class QFileSystemWatcher;
 class QLabel;
 class DialogVariables;
 class DialogTool;
+class DialogRectangle;
 class HistoryDialog;
 class CalculatorDialog;
 class DecimalChartDialog;
@@ -88,6 +89,8 @@ class LayoutToolBox;
 class QToolButton;
 class QDoubleSpinBox;
 class QFontComboBox;
+class PointIntersectXYTool;
+class VToolRectangle;
 
 struct DraftImage;
 class ImageItem;
@@ -197,6 +200,7 @@ private slots:
     void handleBisectorTool(bool checked);
     void handleHeightTool(bool checked);
     void handleTriangleTool(bool checked);
+    void handleRectangleTool(bool checked);
     void handleLineIntersectAxisTool(bool checked);
     void handlePointOfContactTool(bool checked);
     void handlePointIntersectXYTool(bool checked);
@@ -218,6 +222,8 @@ private slots:
     void handlePointFromArcAndTangentTool(bool checked);
     void handleArcWithLengthTool(bool checked);
     void handleArcIntersectAxisTool(bool checked);
+    void ApplyRectangleDialog();
+    void ClosedRectangleDialog(int result);
     void handlePointOfIntersectionArcsTool(bool checked);
     void handlePointOfIntersectionCirclesTool(bool checked);
     void handlePointFromCircleAndTangentTool(bool checked);
@@ -382,6 +388,8 @@ private:
     void                              handlePieceMenu();
     void                              handleLayoutMenu();
     void                              handleImagesMenu();
+
+    VToolRectangle                   *createRectangle(const QSharedPointer<DialogRectangle> &dialog);
 
 
     void                              CancelTool();

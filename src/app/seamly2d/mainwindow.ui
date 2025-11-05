@@ -54,8 +54,34 @@
       <property name="horizontalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOn</enum>
       </property>
-     </widget>
-    </item>
+               </widget>
+              </item>
+              <item row="10" column="0">
+               <widget class="QToolButton" name="rectangle_ToolButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Rectangle (R, E)</string>
+                </property>
+                <property name="text">
+                 <string notr="true">...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="share/resources/toolicon.qrc">
+                  <normaloff>:/toolicon/32x32/rectangle.png</normaloff>:/toolicon/32x32/rectangle.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -223,6 +249,7 @@
      <addaction name="pointOnShoulder_Action"/>
      <addaction name="pointOfContact_Action"/>
      <addaction name="triangle_Action"/>
+     <addaction name="rectangle_Action"/>
      <addaction name="pointIntersectXY_Action"/>
      <addaction name="perpendicularPoint_Action"/>
      <addaction name="pointIntersectAxis_Action"/>
@@ -635,6 +662,7 @@
    <addaction name="pointOnShoulder_Action"/>
    <addaction name="pointOfContact_Action"/>
    <addaction name="triangle_Action"/>
+   <addaction name="rectangle_Action"/>
    <addaction name="pointIntersectXY_Action"/>
    <addaction name="perpendicularPoint_Action"/>
    <addaction name="pointIntersectAxis_Action"/>
@@ -3175,11 +3203,29 @@
    <property name="toolTip">
     <string>Point - Intersect Axis and Triangle (X, T)</string>
    </property>
-   <property name="shortcut">
-    <string notr="true">X, T</string>
-   </property>
-  </action>
-  <action name="pointIntersectXY_Action">
+  <property name="shortcut">
+   <string notr="true">X, T</string>
+  </property>
+ </action>
+ <action name="rectangle_Action">
+  <property name="enabled">
+   <bool>false</bool>
+  </property>
+  <property name="icon">
+   <iconset resource="share/resources/toolicon.qrc">
+    <normaloff>:/toolicon/32x32/rectangle.png</normaloff>:/toolicon/32x32/rectangle.png</iconset>
+  </property>
+  <property name="text">
+   <string>Rectangle</string>
+  </property>
+  <property name="toolTip">
+   <string>Rectangle (R, E)</string>
+  </property>
+  <property name="shortcut">
+   <string notr="true">R, E</string>
+  </property>
+ </action>
+ <action name="pointIntersectXY_Action">
    <property name="enabled">
     <bool>false</bool>
    </property>

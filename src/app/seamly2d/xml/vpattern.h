@@ -207,6 +207,7 @@ private:
     void ParseToolHeight(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
     void ParseToolTriangle(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
     void parseIntersectXYTool(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
+    void parseRectangleTool(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
     void ParseToolCutSpline(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolCutSplinePath(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolCutArc(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
